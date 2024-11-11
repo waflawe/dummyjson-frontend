@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text {
+  color: #111;
+}
+
+.nav-btn {
+  @apply px-3 py-1 border-2 border-blue-500 hover:bg-violet-600 hover:border-violet-600;
+  @apply rounded-xl hover:text-white transition-all duration-200;
+}

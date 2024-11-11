@@ -41,7 +41,7 @@ export default {
 
         switch (status) {
           case true:
-            this.$router.push({name: 'home'})
+            this.$router.push({name: 'products'})
             break
           case false:
             console.log("error")

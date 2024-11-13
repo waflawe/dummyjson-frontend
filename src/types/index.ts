@@ -16,15 +16,25 @@ export interface IProduct {
     thumbnail: string
 }
 
+export interface IReview {
+    rating: number,
+    comment: string,
+    date: string,
+    reviewerName: string,
+    reviewerEmail: string
+}
+
 export interface IProductDetail {
     id: number,
     title: string,
     description: string,
     price: number,
+    category: string,
     discountPercentage: number,
     rating: number,
-    thumbnail: string
-    images: Array<string>
+    thumbnail: string,
+    images: Array<string>,
+    reviews: Array<IReview>
 }
 
 export interface ICategory {

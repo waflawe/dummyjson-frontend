@@ -14,3 +14,19 @@ export function renderResponse<T>(response: AxiosResponse, expectedStatus: numbe
         }
     }
 }
+
+export function humanReadableCategory(categorySlug: string) {
+    let res: string = ''
+    for (let i = 0; i < categorySlug.length; i++) {
+        if (i === 0) {
+            res += (categorySlug[0] as string).toUpperCase()
+        } else if (categorySlug[i] === '-') {
+            res += ' '
+        } else if (categorySlug[i - 1] === '-') {
+            res += (categorySlug[i] as string).toUpperCase()
+        } else {
+            res += categorySlug[i]
+        }
+    }
+    return res
+}

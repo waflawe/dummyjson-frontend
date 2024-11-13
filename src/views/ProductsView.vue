@@ -37,13 +37,13 @@
           <AppDropdown :options="sortOptions" default-option="titleAsc" @optionChanged="optionChanged"/>
         </div>
         <div class="grid grid-cols-3 mt-1 gap-x-10 gap-y-0">
-          <div class="col-span-1 w-full h-full" v-for="product in products" :key="product.id">
+          <router-link :to="{name: 'product', params: {'id': product.id}}" class="col-span-1 w-full h-full" v-for="product in products" :key="product.id">
             <div class="mx-auto mt-6 w-full transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-md duration-300 hover:scale-105 hover:shadow-lg">
               <img class="h-48 w-full object-cover object-center" :src="product.thumbnail" alt="Product Image" />
               <div class="p-4">
                 <h2 class="mb-2 text-lg font-medium dark:text-white text-gray-900">{{product.title}}</h2>
                 <p class="text-sm dark:text-gray-300 text-gray-700">{{product.description}}</p>
-                <p class="text-commented text-sm mb-2">{{ humanReadableCategory(product.category) }}</p>
+                <p class="text-commented text-sm mb-2">{{ categoryToHumanReadable(product.category) }}</p>
                 <div class="flex items-center">
                   <p class="mr-2 text-lg font-semibold text-gray-900 dark:text-white">${{product.price}}</p>
                   <p class="text-base font-medium text-gray-500 line-through dark:text-gray-300">${{(product.price * (1 + product.discountPercentage / 100)).toFixed(2)}}</p>
@@ -51,7 +51,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
 
         <div class="container mx-auto px-4 mt-5" v-if="isPaginationPossible">
@@ -106,6 +106,7 @@ import {
 } from "../types";
 import {LocationQueryRaw} from "vue-router";
 import AppDropdown from "../components/AppDropdown.vue";
+import {humanReadableCategory} from "../helpers";
 
 export default {
   components: {AppDropdown},
@@ -153,20 +154,8 @@ export default {
         this.categories = response.data
       }
     },
-    humanReadableCategory(categorySlug: string) {
-      let res: string = ''
-      for (let i = 0; i < categorySlug.length; i++) {
-        if (i === 0) {
-          res += (categorySlug[0] as string).toUpperCase()
-        } else if (categorySlug[i] === '-') {
-          res += ' '
-        } else if (categorySlug[i - 1] === '-') {
-          res += (categorySlug[i] as string).toUpperCase()
-        } else {
-          res += categorySlug[i]
-        }
-      }
-      return res
+    categoryToHumanReadable(categorySlug: string) {
+      return humanReadableCategory(categorySlug)
     },
     getPagePaginationClasses(page: number) {
       if (page === this.activePage) {

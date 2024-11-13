@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
 import client from "../client";
-import {ICategory, IResponse, IResponseProductPaginated, ProductsOrder, ProductsSort} from "../types";
+import {ICategory, IProductDetail, IResponse, IResponseProductPaginated, ProductsOrder, ProductsSort} from "../types";
 import {renderResponse} from "../helpers";
 
 export const useProductsStore = defineStore("products", {
@@ -26,6 +26,10 @@ export const useProductsStore = defineStore("products", {
             const url = `/products/search?q=${search}`
             const response = await client.get(url)
             return renderResponse<IResponseProductPaginated>(response)
+        },
+        async getProduct(id: number) {
+            const response = await client.get(`/products/${id}/`)
+            return renderResponse<IProductDetail>(response)
         }
     }
 })

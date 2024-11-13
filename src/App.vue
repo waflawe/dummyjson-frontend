@@ -1,8 +1,8 @@
 <template>
-  <TheNavbar/>
   <div class="mt-14">
     <RouterView/>
   </div>
+  <TheNavbar/>
 </template>
 
 <script lang="ts">

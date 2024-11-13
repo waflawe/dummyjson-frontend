@@ -28,6 +28,14 @@
   color: #111;
 }
 
+.text-commented {
+  @apply text-gray-500
+}
+
+.link {
+  @apply text-blue-600 hover:border-b hover:border-blue-600
+}
+
 .text-dark {
   @apply dark:text-slate-100
 }

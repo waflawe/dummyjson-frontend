@@ -1,8 +1,11 @@
 <template>
   <main>
     <div class="max-w-md mx-auto mt-24">
-      <form class="p-4" @submit.prevent="submit">
+      <form class="p-4" @submit.prevent="submit" @keyup.enter="submit">
         <div class="text text-dark text-center text-3xl poppins">Log in</div>
+        <div class="text-commented text-center text-lg poppins">
+          Users availible <a href="https://dummyjson.com/users" class="link" target="_blank">here</a>
+        </div>
         <div class="mb-4">
           <label class="block text text-dark font-bold mb-2">Username</label>
           <input type="text" class="w-full py-2 px-3 border border-gray-400 rounded-md shadow-sm focus:outline-none

@@ -9,11 +9,40 @@ export interface IProduct {
     id: number,
     title: string,
     description: string,
+    rating: number,
+    price: number,
+    category: string,
+    discountPercentage: number,
+    thumbnail: string
+}
+
+export interface IProductDetail {
+    id: number,
+    title: string,
+    description: string,
     price: number,
     discountPercentage: number,
     rating: number,
     thumbnail: string
     images: Array<string>
+}
+
+export interface ICategory {
+    slug: string,
+    name: string,
+    url: string
+}
+
+export enum ProductsOrder {
+    ASC = 'asc',
+    DESC = 'desc'
+}
+
+export enum ProductsSort {
+    TITLE = 'title',
+    RATING = 'rating',
+    PRICE = 'price',
+    DISCOUNT_PERCENTAGE = 'discountPercentage',
 }
 
 export interface IResponseProductPaginated {

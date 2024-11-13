@@ -1,29 +1,27 @@
 import {defineStore} from "pinia";
 import client from "../client";
-import axios from 'axios'
-import {IResponse, IResponseProductPaginated} from "../types";
+import {ICategory, IResponse, IResponseProductPaginated, ProductsOrder, ProductsSort} from "../types";
+import {renderResponse} from "../helpers";
 
 export const useProductsStore = defineStore("products", {
     actions: {
-        async getProducts(search: string = '', offset: number = 0): Promise<IResponse<IResponseProductPaginated>> {
-            const url = `https://dummyjson.com/products?
-                search=${search}
-                &skip=${offset}
-                &limit=20
-                &select=id,title,description,images,thumbnail,rating,price,discountPercentage
-            `
+        async getProducts(category: string = '', offset: number = 0, search: string = '', sortBy: string = ProductsSort.TITLE, order: ProductsOrder = ProductsOrder.ASC): Promise<IResponse<IResponseProductPaginated>> {
+            const baseUrl = category.length ? `/products/category/${category}` : '/products'
+            const urlWithoutSearch = baseUrl + (
+                `?skip=${offset}` +
+                `&limit=51` +
+                `&select=id,title,description,thumbnail,price,discountPercentage,rating,category` +
+                `&sortBy=${sortBy}` +
+                `&order=${order}`
+            )
+            const url = search.length ? urlWithoutSearch + `&search=${search}` : urlWithoutSearch
             const response = await client.get(url)
-            if (response.status === axios.HttpStatusCode.Ok) {
-                return {
-                    status: true,
-                    data: response.data
-                }
-            } else {
-                return {
-                    status: false,
-                    data: response.data
-                }
-            }
+            return renderResponse<IResponseProductPaginated>(response)
+        },
+        async getCategories(): Promise<IResponse<Array<ICategory>>> {
+            const url = '/products/categories/'
+            const response = await client.get(url)
+            return renderResponse<Array<ICategory>>(response)
         }
     }
 })

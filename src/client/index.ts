@@ -1,7 +1,11 @@
 import axios from 'axios'
 
 function fetchClient() {
-    let instance = axios.create()
+    const defaultOptions = {
+        baseURL: 'https://dummyjson.com/',
+    }
+
+    let instance = axios.create(defaultOptions)
 
     instance.interceptors.request.use(function (config) {
         const token = localStorage.getItem('access')

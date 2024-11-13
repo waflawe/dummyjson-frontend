@@ -18,7 +18,7 @@ export const useAuthenticationStore = defineStore('auth', {
     },
     actions: {
         async login(username: string, password: string): Promise<boolean> {
-            const response = await client.post('https://dummyjson.com/auth/login', {
+            const response = await client.post('/auth/login', {
                 username,
                 password
             }, {headers: {'Content-Type': 'application/json'}})

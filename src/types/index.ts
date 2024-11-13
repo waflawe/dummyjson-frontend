@@ -56,3 +56,14 @@ export interface IResponse<D> {
     status: boolean
     data: D
 }
+
+export interface ISortOptions {
+    titleAsc: string,
+    titleDesc: string,
+    ratingAsc: string,
+    ratingDesc: string,
+    priceAsc: string,
+    priceDesc: string,
+    discountPercentageAsc: string,
+    discountPercentageDesc: string
+}

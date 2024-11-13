@@ -2,7 +2,7 @@
   <main>
     <div class="mb-10 mx-10 gap-5 flex relative">
       <div class="w-1/4 mt-5 relative">
-        <div class="sticky top-0 left-0 border border-gray-500 rounded-xl h-screen overflow-y-auto">
+        <div class="sticky top-0 left-0 border border-gray-400 rounded-xl h-screen overflow-y-auto">
           <div class="mx-1" @click="changeCategory('')">
             <div class="hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
               <div class="ml-3 text text-dark text-lg">
@@ -21,16 +21,20 @@
         </div>
       </div>
       <div class="w-3/4 mt-5">
-        <div class="inline-flex flex-col justify-center relative text-gray-500 w-full">
-          <div class="relative w-full">
-            <input type="text"
-                   class="p-2 pl-8 rounded border border-gray-200 bg-gray-200 focus:bg-white focus:outline-none
-               focus:ring-2 focus:ring-yellow-600 focus:border-transparent w-full" placeholder="Search..." v-model="search" @keyup.enter="searchProduct"
-            />
-            <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
+        <div class="flex gap-5">
+          <div class="inline-flex flex-col justify-center relative text-gray-500 dark:text-gray-400 w-full">
+            <div class="relative w-full">
+              <input type="text"
+                     class="p-2 pl-8 rounded border border-gray-400 bg-gray-200 focus:outline-none
+               focus:ring-2 focus:ring-yellow-600 focus:border-transparent w-full dark:bg-[#20293A]" placeholder="Search..." v-model="search" @keyup.enter="searchProduct"
+              />
+              <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
           </div>
+
+          <AppDropdown :options="sortOptions" default-option="titleAsc" @optionChanged="optionChanged"/>
         </div>
         <div class="grid grid-cols-3 mt-1 gap-x-10 gap-y-0">
           <div class="col-span-1 w-full h-full" v-for="product in products" :key="product.id">
@@ -91,10 +95,20 @@
 <script lang="ts">
 import {mapStores} from "pinia";
 import {useProductsStore} from "../stores/productsStore.ts";
-import {IProduct, IResponse, IResponseProductPaginated, ICategory} from "../types";
+import {
+  ICategory,
+  IProduct,
+  IResponse,
+  IResponseProductPaginated,
+  ISortOptions,
+  ProductsOrder,
+  ProductsSort
+} from "../types";
 import {LocationQueryRaw} from "vue-router";
+import AppDropdown from "../components/AppDropdown.vue";
 
 export default {
+  components: {AppDropdown},
   data() {
     return {
       products: [] as Array<IProduct>,
@@ -102,12 +116,22 @@ export default {
       categories: [] as Array<ICategory>,
       totalPages: 0 as number,
       activePage: 1 as number,
-      isPaginationPossible: true as boolean
+      isPaginationPossible: true as boolean,
+      sortOptions: {
+        titleAsc: 'Product title',
+        titleDesc: 'Product title',
+        ratingAsc: 'Product rating',
+        ratingDesc: 'Product rating',
+        priceAsc: 'Product price',
+        priceDesc: 'Product price',
+        discountPercentageAsc: 'Product discount',
+        discountPercentageDesc: 'Product discount'
+      } as ISortOptions
     }
   },
   methods: {
-    async getProducts(categorySlug: string = '', page: number = 1) {
-      const response: IResponse<IResponseProductPaginated> = await this.productsStore.getProducts(categorySlug, ((page - 1) * 51))
+    async getProducts(categorySlug: string = '', page: number = 1, sortBy: ProductsSort = ProductsSort.TITLE, order: ProductsOrder = ProductsOrder.ASC) {
+      const response: IResponse<IResponseProductPaginated> = await this.productsStore.getProducts(categorySlug, ((page - 1) * 51), sortBy, order)
       if (response.status) {
         this.products = response.data.products
         this.totalPages = Math.ceil(response.data.total / 51)
@@ -153,18 +177,28 @@ export default {
     },
     changePage(page: number) {
       if (page <= this.totalPages && page > 0) {
-        let query: LocationQueryRaw = {page}
+        let query: LocationQueryRaw = {page, 'sortBy': this.$route.query.sortBy ?? ProductsSort.TITLE, 'order': this.$route.query.order ?? ProductsOrder.ASC}
         if (this.$route.query.category) {query.category = this.$route.query.category as string}
         this.$router.push({name: 'products', query})
       }
     },
     changeCategory(categorySlug: string) {
-      this.$router.push({name: 'products', query: {'category': categorySlug, 'page': 1}})
+      this.$router.push({name: 'products', query: {'category': categorySlug, 'page': 1, 'sortBy': this.$route.query.sortBy ?? ProductsSort.TITLE, 'order': this.$route.query.order ?? ProductsOrder.ASC}})
     },
     searchProduct() {
       if (this.search.length) {
         this.$router.push({name: 'products', query: {'search': this.search}})
       }
+    },
+    optionChanged(newOption: string) {
+      let query = {
+        ...this.$route.query,
+        ...{
+          'sortBy': (newOption.endsWith('Asc') ? newOption.slice(0, -3) : newOption.slice(0, -4)),
+          'order': (newOption.endsWith('Asc') ? ProductsOrder.ASC : ProductsOrder.DESC)
+        }
+      }
+      this.$router.push({name: 'products', query})
     }
   },
   async mounted() {
@@ -173,7 +207,7 @@ export default {
     } else {
       const category: string = this.$route.query.category?.length ? (this.$route.query.category as string) : ''
       const page: number = this.$route.query.page?.length ? +this.$route.query.page : 1
-      await this.getProducts(category, page)
+      await this.getProducts(category, page, this.$route.query.sortBy ?? ProductsSort.TITLE, this.$route.query.order ?? ProductsOrder.ASC)
     }
     await this.getCategories()
   },
@@ -183,7 +217,7 @@ export default {
         await this.searchProducts(to.query.search)
       } else {
         const page: number = ((to.query.category !== from.query.category) || (to.query.search !== from.query.search)) ? 1 : to.query.page
-        await this.getProducts(to.query.category ?? '', page)
+        await this.getProducts(to.query.category ?? '', page, to.query.sortBy ?? ProductsSort.TITLE, to.query.order ?? ProductsOrder.ASC)
       }
     }
   },

@@ -5,16 +5,15 @@ import {renderResponse} from "../helpers";
 
 export const useProductsStore = defineStore("products", {
     actions: {
-        async getProducts(category: string = '', offset: number = 0, search: string = '', sortBy: string = ProductsSort.TITLE, order: ProductsOrder = ProductsOrder.ASC): Promise<IResponse<IResponseProductPaginated>> {
+        async getProducts(category: string = '', offset: number = 0, sortBy: string = ProductsSort.TITLE, order: ProductsOrder = ProductsOrder.ASC): Promise<IResponse<IResponseProductPaginated>> {
             const baseUrl = category.length ? `/products/category/${category}` : '/products'
-            const urlWithoutSearch = baseUrl + (
+            const url = baseUrl + (
                 `?skip=${offset}` +
                 `&limit=51` +
                 `&select=id,title,description,thumbnail,price,discountPercentage,rating,category` +
                 `&sortBy=${sortBy}` +
                 `&order=${order}`
             )
-            const url = search.length ? urlWithoutSearch + `&search=${search}` : urlWithoutSearch
             const response = await client.get(url)
             return renderResponse<IResponseProductPaginated>(response)
         },
@@ -22,6 +21,11 @@ export const useProductsStore = defineStore("products", {
             const url = '/products/categories/'
             const response = await client.get(url)
             return renderResponse<Array<ICategory>>(response)
+        },
+        async searchProducts(search: string) {
+            const url = `/products/search?q=${search}`
+            const response = await client.get(url)
+            return renderResponse<IResponseProductPaginated>(response)
         }
     }
 })

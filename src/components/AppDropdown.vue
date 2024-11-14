@@ -1,9 +1,9 @@
 <template>
-  <div class="relative inline-block text-left w-64 border border-gray-400 bg-gray-200 rounded dark:bg-[#20293A]"
+  <div class="relative inline-block text-left w-64 border border-gray-300 dark:border-gray-500 bg-gray-200 rounded dark:bg-[#20293A]"
        :class="{'': !isOpened, 'outline-none ring-2 ring-yellow-600 border-transparent': isOpened}"
   >
     <button
-        class="w-full bg-white border border-gray-400 text-gray-700 py-2 px-3 rounded flex dark:bg-[#20293A] dark:border-slate-700 dark:text-gray-400"
+        class="w-full bg-gray-50 text-gray-700 py-2 px-3 rounded flex dark:bg-[#20293A] dark:text-gray-400"
         @click="isOpened = !isOpened"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto pr-1 size-6" v-if="selectedOption.length ? selectedOption.endsWith('Asc') : defaultSort === 'asc'">
@@ -40,8 +40,6 @@
 </template>
 
 <script lang="ts">
-import {ProductsSort} from "../types";
-
 export default {
   emits: ['optionChanged'],
   props: {

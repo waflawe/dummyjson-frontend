@@ -3,9 +3,9 @@
     <div class="loader" v-if="productsLoading || categoriesLoading"></div>
     <div class="mb-10 mx-10 gap-5 flex relative">
       <div class="w-1/4 mt-5 relative">
-        <div class="sticky top-0 left-0 border border-gray-400 rounded-xl h-screen overflow-y-auto">
+        <div class="sticky top-0 left-0 border border-gray-300 dark:border-gray-500 rounded-xl h-screen overflow-y-auto bg-gray-50 dark:bg-slate-800">
           <div class="mx-1" @click="changeCategory('')">
-            <div class="hover:bg-gray-300 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
+            <div class="hover:bg-gray-200 dark:hover:bg-gray-700 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
               <div class="ml-3 text text-dark text-lg">
                 All
               </div>
@@ -13,7 +13,7 @@
           </div>
 
           <div class="mx-1" v-for="category in categories" :key="category.slug" @click="changeCategory(category.slug)">
-            <div class="hover:bg-gray-300 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
+            <div class="hover:bg-gray-200 dark:hover:bg-gray-700 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
               <div class="ml-3 text text-dark text-lg">
                 {{category.name}}
               </div>
@@ -26,8 +26,8 @@
           <div class="inline-flex flex-col justify-center relative text-gray-500 dark:text-gray-400 w-full">
             <div class="relative w-full">
               <input type="text"
-                     class="p-2 pl-8 rounded border border-gray-400 bg-gray-200 focus:outline-none
-               focus:ring-2 focus:ring-yellow-600 focus:border-transparent w-full dark:bg-[#20293A]" placeholder="Search..." v-model="search" @keyup.enter="searchProduct"
+                     class="p-2 pl-8 rounded border border-gray-300 dark:border-gray-500 focus:outline-none
+               focus:ring-2 focus:ring-yellow-600 focus:border-transparent w-full bg-gray-50 dark:bg-slate-800" placeholder="Search..." v-model="search" @keyup.enter="searchProduct"
               />
               <svg class="w-4 h-4 absolute left-2.5 top-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -39,7 +39,8 @@
         </div>
         <div class="grid grid-cols-3 mt-1 gap-x-10 gap-y-0">
           <router-link :to="{name: 'product', params: {'id': product.id}}" class="col-span-1 w-full h-full" v-for="product in products" :key="product.id">
-            <div class="mx-auto mt-6 w-full transform overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-md duration-300 hover:scale-105 hover:shadow-lg">
+            <div class="mx-auto mt-6 w-full transform overflow-hidden rounded-lg bg-gray-50 dark:bg-slate-800 shadow-md duration-300
+            hover:scale-105 hover:shadow-lg">
               <img class="h-48 w-full object-cover object-center" :src="product.thumbnail" alt="Product Image" />
               <div class="p-4">
                 <h2 class="mb-2 text-lg font-medium dark:text-white text-gray-900">{{product.title}}</h2>
@@ -58,8 +59,8 @@
         <div class="container mx-auto px-4 mt-5" v-if="isPaginationPossible">
           <nav class="flex flex-row flex-nowrap justify-between md:justify-center items-center">
             <div
-                class="flex w-10 h-10 mr-1 justify-center items-center rounded-full border border-gray-200 bg-white dark:bg-gray-800 cursor-pointer
-                text-black dark:text-white hover:border-gray-300 dark:hover:border-gray-600"
+                class="flex w-10 h-10 ml-1 justify-center items-center rounded-full border border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-800
+                text-black dark:text-white hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer"
                 @click="changePage(activePage - 1)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -69,7 +70,7 @@
             </div>
 
             <div
-                class="hidden md:flex w-10 h-10 mx-1 justify-center items-center rounded-full border dark:text-white cursor-pointer"
+                class="hidden md:flex w-10 h-10 mx-1 justify-center items-center rounded-full border border-gray-400 dark:border-gray-500 hover:border-gray-500 dark:hover:border-gray-600 dark:text-white cursor-pointer"
                 :class="getPagePaginationClasses(page)"
                 v-for="page in totalPages"
                 :key="page"
@@ -77,7 +78,7 @@
             >{{page}}</div>   <!-- FIX PAGINATION ACTIVE PAGE BUG -->
 
             <div
-                class="flex w-10 h-10 ml-1 justify-center items-center rounded-full border border-gray-200 bg-white dark:bg-gray-800
+                class="flex w-10 h-10 ml-1 justify-center items-center rounded-full border border-gray-200 dark:border-gray-500 bg-white dark:bg-gray-800
                 text-black dark:text-white hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer"
                 @click="changePage(activePage + 1)"
             >

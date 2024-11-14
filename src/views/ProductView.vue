@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row -mx-4">
         <div class="md:flex-1 px-4">
-          <div class="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4 flex text-white">
+          <div class="h-[465px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4 flex text-gray-50">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -26,7 +26,7 @@
               <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
             </svg>
           </div>
-        </div> <!-- MAKES POSSIBLE TO SHOW REVIEWS -->
+        </div>
         <div class="md:flex-1 px-4">
           <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-1">{{product!.title}}</h2>
           <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
@@ -34,21 +34,7 @@
             <span class="flex gap-1">
               <span class="text-2xl font-bold text-gray-800 dark:text-white mt-4">{{product!.rating}}</span>
               <span class="flex items-center mt-4">
-                <svg
-                    class="shrink-0 size-5"
-                    :class="{
-                      'text-yellow-400 dark:text-yellow-600': index <= Math.round(+product!.rating),
-                      'text-gray-300 dark:text-neutral-600': index > Math.round(+product!.rating)
-                    }"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                    v-for="index in 5"
-                >
-                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
-                </svg>
+                <AppRatingStars :rating="+product!.rating"/>
               </span>
             </span>
           </p>
@@ -74,6 +60,21 @@
           </div>
         </div>
       </div>
+      <div class="">
+        <div class="text text-dark text-3xl">Reviews ({{ product!.reviews.length }})</div>
+        <div class="mb-3 ms-1.5" v-for="review in product!.reviews" :key="review.reviewerEmail">
+          <p class="flex items-baseline">
+            <span class="text-gray-600 font-bold">{{review.reviewerName}}</span>
+            <span class="ml-2 text-commented text-xs">{{review.reviewerEmail}}</span>
+          </p>
+          <div class="flex items-center mt-1">
+            <AppRatingStars :rating="+review.rating"/>
+          </div>
+          <div class="mt-1">
+            <p class="mt-1 text text-dark">{{review.comment}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -83,8 +84,10 @@ import {IProductDetail, IResponse} from "../types";
 import {mapStores} from "pinia";
 import {useProductsStore} from "../stores/productsStore.ts";
 import {humanReadableCategory} from "../helpers";
+import AppRatingStars from "../components/AppRatingStars.vue";
 
 export default {
+  components: {AppRatingStars},
   data() {
     return {
       product: undefined as IProductDetail | undefined,

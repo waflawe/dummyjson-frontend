@@ -3,12 +3,17 @@
        :class="{'': !isOpened, 'outline-none ring-2 ring-yellow-600 border-transparent': isOpened}"
   >
     <button
-        class="w-full bg-white border border-gray-400 text-gray-700 py-2 px-4 rounded inline-flex justify-between
-                items-center dark:bg-[#20293A] dark:border-slate-700 dark:text-gray-400"
+        class="w-full bg-white border border-gray-400 text-gray-700 py-2 px-3 rounded flex dark:bg-[#20293A] dark:border-slate-700 dark:text-gray-400"
         @click="isOpened = !isOpened"
     >
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto pr-1 size-6" v-if="selectedOption.length ? selectedOption.endsWith('Asc') : defaultSort === 'asc'">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+      </svg>
+
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="my-auto pr-1 size-6" v-if="selectedOption.length ? selectedOption.endsWith('Desc') : defaultSort === 'desc'">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+      </svg>
       <span>{{options[(selectedOption.length ? selectedOption : defaultOption)]}}</span>
-      <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
     </button>
 
     <div
@@ -35,11 +40,18 @@
 </template>
 
 <script lang="ts">
+import {ProductsSort} from "../types";
+
 export default {
   emits: ['optionChanged'],
   props: {
     options: Object,
     defaultOption: String,
+    defaultSort: {
+      type: String,
+      required: false,
+      default: undefined
+    },
     ascDescMode: {
       type: Boolean,
       required: false,

@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <AppDropdown :options="sortOptions" default-option="titleAsc" @optionChanged="optionChanged"/>
+          <AppDropdown :options="sortOptions" default-option="titleAsc" default-sort="asc" @optionChanged="optionChanged"/>
         </div>
         <div class="grid grid-cols-3 mt-1 gap-x-10 gap-y-0">
           <router-link :to="{name: 'product', params: {'id': product.id}}" class="col-span-1 w-full h-full" v-for="product in products" :key="product.id">

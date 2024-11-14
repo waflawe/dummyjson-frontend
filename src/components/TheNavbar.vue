@@ -11,7 +11,12 @@
         <RouterLink :to="{name: 'login'}" v-if="!authStore.isAuth">
           <button class="nav-btn" type="button">Login</button>
         </RouterLink>
-        <button class="nav-btn" type="button" v-if="authStore.isAuth" @click="logout">Logout</button>
+        <div class="flex" v-if="authStore.isAuth">
+          <div class="rounded-full my-auto mr-3 size-[30px]">
+            <img :src="authStore.user.image" alt="User Image">
+          </div>
+          <button class="nav-btn" type="button" @click="logout">Logout</button>
+        </div>
       </div>
     </div>
   </nav>

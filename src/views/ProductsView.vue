@@ -4,7 +4,7 @@
       <div class="w-1/4 mt-5 relative">
         <div class="sticky top-0 left-0 border border-gray-400 rounded-xl h-screen overflow-y-auto">
           <div class="mx-1" @click="changeCategory('')">
-            <div class="hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
+            <div class="hover:bg-gray-400 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
               <div class="ml-3 text text-dark text-lg">
                 All
               </div>
@@ -12,7 +12,7 @@
           </div>
 
           <div class="mx-1" v-for="category in categories" :key="category.slug" @click="changeCategory(category.slug)">
-            <div class="hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
+            <div class="hover:bg-gray-400 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
               <div class="ml-3 text text-dark text-lg">
                 {{category.name}}
               </div>

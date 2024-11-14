@@ -8,14 +8,30 @@
         <p class="sawarabi">Products</p>
       </RouterLink>
       <div class="ms-auto me-10">
-        <RouterLink :to="{name: 'login'}">
-          <button class="nav-btn text-lg" type="button">Login</button>
+        <RouterLink :to="{name: 'login'}" v-if="!authStore.isAuth">
+          <button class="nav-btn" type="button">Login</button>
         </RouterLink>
+        <button class="nav-btn" type="button" v-if="authStore.isAuth" @click="logout">Logout</button>
       </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
-export default {}
+import {mapStores} from "pinia";
+import {useAuthenticationStore} from "../stores/authenticationStore.ts";
+
+export default {
+  methods: {
+    logout() {
+      if (this.authStore.isAuth) {
+        this.authStore.logout()
+        this.$router.push({name: 'home'})
+      }
+    }
+  },
+  computed: {
+    ...mapStores(useAuthenticationStore)
+  }
+}
 </script>

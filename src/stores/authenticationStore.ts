@@ -13,7 +13,8 @@ export const useAuthenticationStore = defineStore('auth', {
                 image: undefined
             } as IAuthenticatedUser,
             access: (localStorage.getItem('access') ?? '') as string,
-            refresh: (localStorage.getItem('refresh') ?? '') as string
+            refresh: (localStorage.getItem('refresh') ?? '') as string,
+            isAuth: (!!localStorage.getItem('access')) as boolean
         }
     },
     actions: {
@@ -35,10 +36,20 @@ export const useAuthenticationStore = defineStore('auth', {
                 localStorage.setItem('access', this.access)
                 localStorage.setItem('refresh', this.refresh)
 
+                this.isAuth = true
+
                 return true
             }
 
             return false
+        },
+        logout(): void {
+            if (this.isAuth) {
+                this.user = {}
+                localStorage.removeItem('access')
+                localStorage.removeItem('refresh')
+                this.isAuth = false
+            }
         }
     }
 })

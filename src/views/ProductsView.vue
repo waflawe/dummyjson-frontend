@@ -1,10 +1,11 @@
 <template>
-  <main>
+  <main class="relative">
+    <div class="loader" v-if="productsLoading || categoriesLoading"></div>
     <div class="mb-10 mx-10 gap-5 flex relative">
       <div class="w-1/4 mt-5 relative">
         <div class="sticky top-0 left-0 border border-gray-400 rounded-xl h-screen overflow-y-auto">
           <div class="mx-1" @click="changeCategory('')">
-            <div class="hover:bg-gray-400 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
+            <div class="hover:bg-gray-300 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full mt-0.5">
               <div class="ml-3 text text-dark text-lg">
                 All
               </div>
@@ -12,7 +13,7 @@
           </div>
 
           <div class="mx-1" v-for="category in categories" :key="category.slug" @click="changeCategory(category.slug)">
-            <div class="hover:bg-gray-400 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
+            <div class="hover:bg-gray-300 dark:hover:bg-gray-600 hover:rounded-lg bg-transparent py-1 cursor-pointer w-full">
               <div class="ml-3 text text-dark text-lg">
                 {{category.name}}
               </div>
@@ -118,6 +119,8 @@ export default {
       totalPages: 0 as number,
       activePage: 1 as number,
       isPaginationPossible: true as boolean,
+      productsLoading: false as boolean,
+      categoriesLoading: false as boolean,
       sortOptions: {
         titleAsc: 'Product title',
         titleDesc: 'Product title',
@@ -132,6 +135,7 @@ export default {
   },
   methods: {
     async getProducts(categorySlug: string = '', page: number = 1, sortBy: ProductsSort = ProductsSort.TITLE, order: ProductsOrder = ProductsOrder.ASC) {
+      this.productsLoading = true
       const response: IResponse<IResponseProductPaginated> = await this.productsStore.getProducts(categorySlug, ((page - 1) * 51), sortBy, order)
       if (response.status) {
         this.products = response.data.products
@@ -139,20 +143,25 @@ export default {
         this.activePage = page
         this.isPaginationPossible = true
       }
+      this.productsLoading = false
     },
     async searchProducts(search: string) {
+      this.productsLoading = true
       const response: IResponse<IResponseProductPaginated> = await this.productsStore.searchProducts(search)
       if (response.status) {
         this.products = response.data.products
         this.totalPages = Math.ceil(response.data.total / 51)
         this.isPaginationPossible = false
       }
+      this.productsLoading = false
     },
     async getCategories() {
+      this.categoriesLoading = true
       const response: IResponse<Array<ICategory>> = await this.productsStore.getCategories()
       if (response.status) {
         this.categories = response.data
       }
+      this.categoriesLoading = false
     },
     categoryToHumanReadable(categorySlug: string) {
       return humanReadableCategory(categorySlug)

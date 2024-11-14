@@ -1,6 +1,7 @@
 <template>
-  <main>
-    <div class="h-screen pt-4 pb-8">
+  <main class="relative">
+    <div class="loader" v-if="loading"></div>
+    <div class="h-screen pt-4 pb-8" v-if="cart">
       <div class="container mx-auto px-4">
         <h1 class="text-2xl font-semibold mb-4 text text-dark">Shopping Cart</h1>
         <div class="flex flex-col md:flex-row gap-4">
@@ -70,14 +71,17 @@ import {IResponse, IResponseCartPaginated, ICart} from "../types";
 export default {
   data() {
     return {
-      cart: undefined as ICart | undefined
+      cart: undefined as ICart | undefined,
+      loading: false as boolean
     }
   },
-  async beforeMount() {
+  async mounted() {
+    this.loading = true
     const response: IResponse<IResponseCartPaginated> = await this.cartsStore.getMyCart()
     if (response.status) {
       this.cart = response.data.carts[0]
     }
+    this.loading = false
   },
   computed: {
     ...mapStores(useCartsStore)

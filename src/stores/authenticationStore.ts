@@ -18,6 +18,14 @@ export const useAuthenticationStore = defineStore('auth', {
         }
     },
     actions: {
+        init() {
+            if (localStorage.getItem('access')) {
+                this.user = JSON.parse(localStorage.getItem('user')!)
+                this.access = localStorage.getItem('access')!
+                this.refresh = localStorage.getItem('refresh')!
+                this.isAuth = true
+            }
+        },
         async login(username: string, password: string): Promise<boolean> {
             const response = await client.post('/auth/login', {
                 username,
@@ -33,6 +41,7 @@ export const useAuthenticationStore = defineStore('auth', {
                 this.access = response.data.accessToken
                 this.refresh = response.data.refreshToken
 
+                localStorage.setItem('user', JSON.stringify(this.user))
                 localStorage.setItem('access', this.access)
                 localStorage.setItem('refresh', this.refresh)
 
@@ -46,6 +55,7 @@ export const useAuthenticationStore = defineStore('auth', {
         logout(): void {
             if (this.isAuth) {
                 this.user = {}
+                localStorage.removeItem('user')
                 localStorage.removeItem('access')
                 localStorage.removeItem('refresh')
                 this.isAuth = false

@@ -55,11 +55,35 @@ export enum ProductsSort {
     DISCOUNT_PERCENTAGE = 'discountPercentage',
 }
 
-export interface IResponseProductPaginated {
-    products: Array<IProduct>
+interface IPaginated {
     total: number,
     skip: number,
     limit: number
+}
+
+export interface ICartProduct {
+    id: number,
+    title: string,
+    price: number,
+    quantity: number,
+    total: number,
+    discountedTotal: number,
+    thumbnail: string
+}
+
+export interface ICart {
+    id: number,
+    products: Array<ICartProduct>
+    total: number,
+    discountedTotal: number
+}
+
+export interface IResponseProductPaginated extends IPaginated {
+    products: Array<IProduct>
+}
+
+export interface IResponseCartPaginated extends IPaginated {
+    carts: Array<ICart>
 }
 
 export interface IResponse<D> {

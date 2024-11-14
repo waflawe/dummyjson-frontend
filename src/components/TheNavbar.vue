@@ -7,6 +7,9 @@
       <RouterLink :to="{name: 'products'}" class="ms-10 text text-dark text-2xl">
         <p class="sawarabi">Products</p>
       </RouterLink>
+      <RouterLink :to="{name: 'cart'}" class="ms-10 text text-dark text-2xl" v-if="authStore.isAuth">
+        <p class="sawarabi">Cart</p>
+      </RouterLink>
       <div class="ms-auto me-10">
         <RouterLink :to="{name: 'login'}" v-if="!authStore.isAuth">
           <button class="nav-btn" type="button">Login</button>
@@ -34,6 +37,9 @@ export default {
         this.$router.push({name: 'home'})
       }
     }
+  },
+  beforeMount() {
+    this.authStore.init()
   },
   computed: {
     ...mapStores(useAuthenticationStore)

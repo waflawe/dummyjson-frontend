@@ -3,8 +3,28 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col md:flex-row -mx-4">
         <div class="md:flex-1 px-4">
-          <div class="h-full rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
-            <img class="w-full h-full object-cover" :src="product!.images[0]" alt="Product Image">
+          <div class="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4 flex text-white">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-10 mt-auto my-auto"
+                :class="{'opacity-100 cursor-pointer': activeImage > 0, 'opacity-0': activeImage <= 0}"
+                @click="prevImage"
+            >
+              <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z" clip-rule="evenodd" />
+            </svg>
+            <img class="w-full h-full object-cover" :src="product!.images[activeImage]" alt="Product Image">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-10 ms-auto my-auto"
+                :class="{'opacity-100 cursor-pointer': activeImage + 1 < product!.images.length, 'opacity-0': activeImage + 1 >= product!.images.length}"
+                @click="nextImage"
+            >
+              <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clip-rule="evenodd" />
+            </svg>
           </div>
         </div> <!-- MAKES POSSIBLE TO SHOW REVIEWS -->
         <div class="md:flex-1 px-4">
@@ -67,18 +87,30 @@ import {humanReadableCategory} from "../helpers";
 export default {
   data() {
     return {
-      product: undefined as IProductDetail | undefined
+      product: undefined as IProductDetail | undefined,
+      activeImage: 0 as number,
     }
   },
   methods: {
     categoryToHumanReadable(categorySlug: string) {
       return humanReadableCategory(categorySlug)
-    }
+    },
+    prevImage() {
+      if (this.activeImage > 0) {
+        this.activeImage--
+      }
+    },
+    nextImage() {
+      if (this.activeImage + 1 < this.product!.images.length) {
+        this.activeImage++
+      }
+    },
   },
   async beforeMount() {
    const response: IResponse<IProductDetail> = await this.productsStore.getProduct(+this.$route.params.id)
     if (response.status) {
       this.product = response.data
+      console.log(this.product!.images)
     }
   },
   computed: {
